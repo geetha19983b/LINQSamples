@@ -37,11 +37,25 @@ namespace LinqSamples
                     case 6:
                         GetOldest();
                         break;
+                    case 7:
+                        FindIfAllItems_InFirstList_IsPresentInSecondList();
+                        break;
                     default:
                         Console.WriteLine("byee");
                         break;
                 }
             }
+        }
+        static void FindIfAllItems_InFirstList_IsPresentInSecondList()
+        {
+            //SampleClass[] List1 = { new SampleClass("1"), new SampleClass("a")};
+            //SampleClass[] List2 = { new SampleClass("1"), new SampleClass("a"), new SampleClass("c"), new SampleClass("1") };
+            List<string> List1 = new List<string>(){ "1", "a","1","rt" };
+            List<string> List2 = new List<string>() { "a", "1", "b", "c" };
+            //Except to remove from the first list all values that exist in the second list, and then check if all values have been removed:
+            var allOfList1IsInList2 = List1.Except(List2).Any();
+            //allOfList1IsInList2.ToList().ForEach(x => Console.WriteLine(x));
+            Console.WriteLine(allOfList1IsInList2);
         }
         //get the olderst person in the list
         static void GetOldest()
