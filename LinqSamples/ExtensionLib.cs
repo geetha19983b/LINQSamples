@@ -16,5 +16,19 @@ namespace LinqSamples
                 yield return s;
             }
         }
+
+        public static TimeSpan Sum(this IEnumerable<TimeSpan> times)
+        {
+            var total = TimeSpan.Zero;
+            foreach (var time in times)
+            {
+                total += time;
+            }
+            return total;
+        }
+        public static string Concat(this IEnumerable<string> strings, string separator)
+        {
+            return string.Join(separator, strings);
+        }
     }
 }

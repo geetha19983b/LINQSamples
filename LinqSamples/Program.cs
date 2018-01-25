@@ -40,12 +40,48 @@ namespace LinqSamples
                     case 7:
                         FindIfAllItems_InFirstList_IsPresentInSecondList();
                         break;
+                    case 8:
+                        FindTimespanSumUsingExtension();
+                        break;
+                    case 9:
+                        LongestBook();
+                        break;
+                    case 10:
+                        StringJoin();
+                    break;
                     default:
                         Console.WriteLine("byee");
                         break;
                 }
             }
         }
+        static void StringJoin()
+        {
+            var res = "6,1-3,2-4"
+        .Split(',')
+        .Select(x => x.Split('-'))
+        .Select(p => new { First = int.Parse(p[0]), Last = int.Parse(p.Last()) })
+        .SelectMany(r => Enumerable.Range(r.First, r.Last - r.First + 1))
+        .Distinct()
+        .OrderBy(n => n)
+        .Select(n => n.ToString())
+        //.Aggregate((curr, next) => curr + "," + next)
+        .Concat(";");
+            Console.WriteLine(res.ToString());
+         
+        }
+        static void FindTimespanSumUsingExtension()
+        {
+         var timespamsum = "1:2:54,3:48,4:51,3:32,6:15,4:08,5:17,3:13,4:16,3:55,4:53,5:35,4:24"
+                .Split(',')
+                .Select(t => "0:" + t)
+                .Select(t => TimeSpan.Parse(t)).Sum();
+
+
+            Console.WriteLine(timespamsum);
+
+        }
+
         static void FindIfAllItems_InFirstList_IsPresentInSecondList()
         {
             //SampleClass[] List1 = { new SampleClass("1"), new SampleClass("a")};
@@ -61,18 +97,30 @@ namespace LinqSamples
         static void GetOldest()
         {
             var res = "Jason Puncheon, 26/06/1986; Jos Hooiveld, 22/04/1983; Kelvin Davis, 29/09/1976; Luke Shaw, 12/07/1995; Gaston Ramirez, 02/12/1990; Adam Lallana, 10/05/1988"
-        .Split(';')
-        .Select(n => n.Split(','))
-        .Select(n => new { Name = n[0].Trim(), DateOfBirth = DateTime.ParseExact(n[1].Trim(), "d/M/yyyy", CultureInfo.InvariantCulture) })
-        .OrderByDescending(n => n.DateOfBirth);
-       // .Select(n => new { Name = n.Name, Age = GetAge(n.DateOfBirth) });
-
-            foreach (var i in res)
+            .Split(';')
+            .Select(s => s.Split(','))
+            .Select(s => new
             {
-              
-                Console.WriteLine(i.Name + " " + i.DateOfBirth);
+                Name = s[0].Trim(),
+                Dob = DateTime.ParseExact(s[1].Trim(), "d/M/yyyy",
+                CultureInfo.InvariantCulture)
+            })
+
+            .OrderByDescending(s => s.Dob)
+            .Select(p =>
+            {
+                var today = DateTime.Today;
+                int age = today.Year - p.Dob.Year;
+                if (p.Dob > today.AddYears(-age)) age--;
+                return new { p.Name, p.Dob, Age = age };
+            })
+            .Select(s => new { s.Name, s.Age }).ToList();
+            foreach(var item in res)
+            {
+                Console.WriteLine("Name : " + item.Name + "Age : " + item.Age);
             }
-    
+
+
         }
         //expand range eg 2,5,7,8,9,10 etc for input as 2,5,7-10
         static void ExpandRange()
@@ -145,6 +193,18 @@ namespace LinqSamples
 
             Console.WriteLine("Album total duration is : " + toaldur);
         }
+        static void LongestBook()
+        {
+            var books = new[] {
+        new { Author = "Robert Martin", Title = "Clean Code", Pages = 464 },
+        new { Author = "Oliver Sturm", Title = "Functional Programming in C#" , Pages = 270 },
+        new { Author = "Martin Fowler", Title = "Patterns of Enterprise Application Architecture", Pages = 533 },
+        new { Author = "Bill Wagner", Title = "Effective C#", Pages = 328 },
+        };
+            var lngstbook = books.Aggregate((agg, next) => next.Pages > agg.Pages ? next : agg);
+            Console.WriteLine(lngstbook.Title);
 
+
+        }
     }
 }
