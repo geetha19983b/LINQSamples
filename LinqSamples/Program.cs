@@ -40,11 +40,80 @@ namespace LinqSamples
                     case 7:
                         FindIfAllItems_InFirstList_IsPresentInSecondList();
                         break;
+                    case 8:
+                        StringJoin();
+                        break;
+                    case 9:
+                        CountPets();
+                        break;
+                    case 10:
+                        SwimLengths();
+                        break;
+                    case 11:
+                        LongestStreakOfSales();
+                        break;
                     default:
                         Console.WriteLine("byee");
                         break;
                 }
             }
+        }
+        static void LongestStreakOfSales()
+        {
+            var salesres = new[] { 0, 1, 3, 0, 0, 2, 1, 5, 4, 0, 0, 0, 3 }
+            .Aggregate(new { Current = 0, Max = 0 }, (acc, next) =>
+                {
+                var c = (next > 0) ? acc.Current + 1 : 0;
+                    return new { Current = c, Max = Math.Max(acc.Max, c) };
+                });
+            Console.WriteLine(salesres.Current + ' ' + salesres.Max);
+        }
+        static void SwimLengths()
+        {
+            var splitTimes = "00:45,01:32,02:18,03:01,03:44,04:31,05:19,06:01,06:47,07:35";
+            
+            //prepend "00:00"
+            var zippedTimes = ("00:00," + splitTimes).Split(',')
+                .Zip(splitTimes.Split(','),
+                (s, f) => new
+                {
+                    Start = TimeSpan.Parse("00:" + s),
+                    Finish = TimeSpan.Parse("00:" + f)
+                })
+                .Select(q => q.Finish - q.Start);
+
+            zippedTimes.ToList().ForEach(x =>
+            Console.WriteLine(x));
+
+        }
+        static void CountPets()
+        {
+            var pets = "Dog,Cat,Rabbit,Dog,Dog,Lizard,Cat,Cat,Dog,Rabbit,Guinea Pig,Dog"
+                    .Split(',')
+                    //.GroupBy(x => (x != "Dog" && x != "Cat") ? "Other" : x)
+                    .CountBy(x => (x != "Dog" && x != "Cat") ? "Other" : x)
+                    //.Select(g => new { Pet = g.Key, Count = g.Count() })
+                    .ToList();
+            foreach(var item in pets)
+            {
+                //Console.WriteLine(item.Pet + ' ' + item.Count);
+                Console.WriteLine(item.Key + ' ' + item.Value);
+            }
+        }
+        static void StringJoin()
+        {
+            var res = "6,1-3,2-4"
+        .Split(',')
+        .Select(x => x.Split('-'))
+        .Select(p => new { First = int.Parse(p[0]), Last = int.Parse(p.Last()) })
+        .SelectMany(r => Enumerable.Range(r.First, r.Last - r.First + 1))
+        .Distinct()
+        .OrderBy(n => n)
+        .Select(n => n.ToString())
+        //.Aggregate((curr, next) => curr + "," + next)
+        .Concat(";");
+            Console.WriteLine(res.ToString());
+
         }
         static void FindIfAllItems_InFirstList_IsPresentInSecondList()
         {

@@ -16,5 +16,27 @@ namespace LinqSamples
                 yield return s;
             }
         }
+        public static string Concat(this IEnumerable<string> strings, string separator)
+        {
+            return string.Join(separator, strings);
+        }
+        public static IEnumerable<KeyValuePair<TKey, int>> CountBy<TSource, TKey>(this IEnumerable<TSource> source,
+                                                                                   Func<TSource, TKey> selector)
+        {
+            var counts = new Dictionary<TKey, int>();
+            foreach (var item in source)
+            {
+                var key = selector(item);
+                if (!counts.ContainsKey(key))
+                {
+                    counts[key] = 1;
+                }
+                else
+                {
+                    counts[key]++;
+                }
+            }
+            return counts;
+        }
     }
 }
