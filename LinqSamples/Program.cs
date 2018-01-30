@@ -40,6 +40,9 @@ namespace LinqSamples
                     case 7:
                         FindIfAllItems_InFirstList_IsPresentInSecondList();
                         break;
+                    case 8:
+                        LongestStreakOfSales();
+                        break;
                     default:
                         Console.WriteLine("byee");
                         break;
@@ -54,7 +57,7 @@ namespace LinqSamples
                 var c = (next > 0) ? acc.Current + 1 : 0;
                     return new { Current = c, Max = Math.Max(acc.Max, c) };
                 });
-            Console.WriteLine(salesres.Current + ' ' + salesres.Max);
+            Console.WriteLine("Current : " + salesres.Current + "Max : " + salesres.Max);
         }
         static void SwimLengths()
         {
@@ -103,21 +106,7 @@ namespace LinqSamples
             Console.WriteLine(res.ToString());
 
         }
-        static void StringJoin()
-        {
-            var res = "6,1-3,2-4"
-        .Split(',')
-        .Select(x => x.Split('-'))
-        .Select(p => new { First = int.Parse(p[0]), Last = int.Parse(p.Last()) })
-        .SelectMany(r => Enumerable.Range(r.First, r.Last - r.First + 1))
-        .Distinct()
-        .OrderBy(n => n)
-        .Select(n => n.ToString())
-        //.Aggregate((curr, next) => curr + "," + next)
-        .Concat(";");
-            Console.WriteLine(res.ToString());
-         
-        }
+       
         static void FindTimespanSumUsingExtension()
         {
          var timespamsum = "1:2:54,3:48,4:51,3:32,6:15,4:08,5:17,3:13,4:16,3:55,4:53,5:35,4:24"
